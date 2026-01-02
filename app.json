@@ -30,6 +30,60 @@
   },
   "drivers": [
     {
+      "id": "tailnet",
+      "name": {
+        "en": "Tailnet Monitor"
+      },
+      "class": "other",
+      "capabilities": [],
+      "platforms": [
+        "local",
+        "cloud"
+      ],
+      "connectivity": [
+        "cloud"
+      ],
+      "images": {
+        "small": "/drivers/tailnet/assets/images/small.png",
+        "large": "/drivers/tailnet/assets/images/large.png",
+        "xlarge": "/drivers/tailnet/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "login_credentials",
+          "template": "login_credentials",
+          "options": {
+            "title": {
+              "en": "Tailscale API Configuration"
+            },
+            "usernameLabel": {
+              "en": "Tailnet Name"
+            },
+            "usernamePlaceholder": {
+              "en": "example.com"
+            },
+            "passwordLabel": {
+              "en": "API Key"
+            },
+            "passwordPlaceholder": {
+              "en": "tskey-api-..."
+            }
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ]
+    },
+    {
       "id": "tailscale-device",
       "name": {
         "en": "Tailscale Device"
@@ -202,6 +256,71 @@
             "type": "boolean",
             "title": {
               "en": "Online"
+            }
+          }
+        ]
+      },
+      {
+        "id": "device_joined_tailnet",
+        "title": {
+          "en": "A new device joined the tailnet"
+        },
+        "tokens": [
+          {
+            "name": "device_name",
+            "type": "string",
+            "title": {
+              "en": "Device name"
+            }
+          },
+          {
+            "name": "user",
+            "type": "string",
+            "title": {
+              "en": "User"
+            }
+          },
+          {
+            "name": "node_id",
+            "type": "string",
+            "title": {
+              "en": "Node ID"
+            }
+          }
+        ]
+      },
+      {
+        "id": "device_reconnected_tailnet",
+        "title": {
+          "en": "A device reconnected after being offline"
+        },
+        "tokens": [
+          {
+            "name": "device_name",
+            "type": "string",
+            "title": {
+              "en": "Device name"
+            }
+          },
+          {
+            "name": "user",
+            "type": "string",
+            "title": {
+              "en": "User"
+            }
+          },
+          {
+            "name": "node_id",
+            "type": "string",
+            "title": {
+              "en": "Node ID"
+            }
+          },
+          {
+            "name": "offline_minutes",
+            "type": "number",
+            "title": {
+              "en": "Minutes offline"
             }
           }
         ]

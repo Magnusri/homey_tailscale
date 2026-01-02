@@ -11,8 +11,19 @@ Monitor and manage your Tailscale network devices, users, and connections direct
 
 - **Device Monitoring**: Track all devices connected to your Tailscale network
 - **Real-time Status**: Monitor device online/offline status with automatic polling
+- **Tailnet Monitoring**: Monitor your entire Tailnet for new device joins and reconnections
 - **Flow Integration**: Create automations based on device connections and disconnections
 - **Device Information**: View hostnames, IP addresses (IPv4/IPv6), and node IDs
+
+## Device Types
+
+### Tailscale Device
+Monitor individual devices on your Tailnet. Track online/offline status for specific devices.
+
+### Tailnet Monitor
+Monitor your entire Tailnet to detect when:
+- New devices join the network
+- Devices reconnect after being offline for more than 15 minutes
 
 ## Installation
 
@@ -42,6 +53,8 @@ Your tailnet name is typically your organization domain (e.g., `example.com`) or
 - A device connected - Fires when any device connects
 - A device disconnected - Fires when any device disconnects
 - Device online status changed - Fires when a specific device's status changes
+- A new device joined the tailnet - Fires when a new device is detected on the Tailnet (requires Tailnet Monitor device)
+- A device reconnected after being offline - Fires when a device reconnects after being offline for 15+ minutes (requires Tailnet Monitor device)
 
 **Conditions:**
 - Device is online - Check if a device is currently online

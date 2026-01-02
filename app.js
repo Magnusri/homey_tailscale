@@ -28,6 +28,8 @@ class TailscaleApp extends Homey.App {
     this.deviceConnectedTrigger = this.homey.flow.getTriggerCard('device_connected');
     this.deviceDisconnectedTrigger = this.homey.flow.getTriggerCard('device_disconnected');
     this.deviceOnlineChangedTrigger = this.homey.flow.getTriggerCard('device_online_changed');
+    this.deviceJoinedTailnetTrigger = this.homey.flow.getTriggerCard('device_joined_tailnet');
+    this.deviceReconnectedTailnetTrigger = this.homey.flow.getTriggerCard('device_reconnected_tailnet');
 
     // Condition cards
     const isDeviceOnlineCondition = this.homey.flow.getConditionCard('is_device_online');
