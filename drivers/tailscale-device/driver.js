@@ -62,7 +62,7 @@ class TailscaleDriver extends Homey.Driver {
         });
 
         return {
-          name: device.hostname || device.name,
+          name: device.name || device.hostname,
           data: {
             id: device.nodeId || device.id
           },
