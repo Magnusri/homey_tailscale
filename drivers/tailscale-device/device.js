@@ -126,7 +126,7 @@ class TailscaleDevice extends Homey.Device {
       if (this.consecutiveErrors >= this.maxConsecutiveErrors) {
         await this.setUnavailable(this.homey.__('errors.api_error'));
       } else {
-        this.log(`Temporary error (${this.consecutiveErrors}/${this.maxConsecutiveErrors}):`, error.message);
+        this.error(`Temporary error (${this.consecutiveErrors}/${this.maxConsecutiveErrors}):`, error.message);
       }
     }
   }
