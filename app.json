@@ -1,0 +1,247 @@
+{
+  "id": "com.magnusri.tailscale",
+  "version": "1.0.0",
+  "compatibility": ">=5.0.0",
+  "sdk": 3,
+  "platforms": [
+    "local",
+    "cloud"
+  ],
+  "name": {
+    "en": "Tailscale"
+  },
+  "description": {
+    "en": "Monitor and manage your Tailscale network devices, users, and connections"
+  },
+  "category": [
+    "internet"
+  ],
+  "permissions": [],
+  "brandColor": "#1E88E5",
+  "author": {
+    "name": "Magnus Riise"
+  },
+  "source": "https://github.com/Magnusri/homey_tailscale",
+  "support": "https://github.com/Magnusri/homey_tailscale/issues",
+  "images": {
+    "small": "/assets/images/small.png",
+    "large": "/assets/images/large.png",
+    "xlarge": "/assets/images/xlarge.png"
+  },
+  "drivers": [
+    {
+      "id": "tailscale-device",
+      "name": {
+        "en": "Tailscale Device"
+      },
+      "class": "other",
+      "capabilities": [
+        "onoff",
+        "alarm_generic"
+      ],
+      "capabilitiesOptions": {
+        "onoff": {
+          "title": {
+            "en": "Online"
+          },
+          "getable": true,
+          "setable": false
+        }
+      },
+      "platforms": [
+        "local",
+        "cloud"
+      ],
+      "connectivity": [
+        "cloud"
+      ],
+      "images": {
+        "small": "/drivers/tailscale-device/assets/images/small.png",
+        "large": "/drivers/tailscale-device/assets/images/large.png",
+        "xlarge": "/drivers/tailscale-device/assets/images/xlarge.png"
+      },
+      "pair": [
+        {
+          "id": "login_credentials",
+          "template": "login_credentials",
+          "options": {
+            "title": {
+              "en": "Tailscale API Configuration"
+            },
+            "usernameLabel": {
+              "en": "Tailnet Name"
+            },
+            "usernamePlaceholder": {
+              "en": "example.com"
+            },
+            "passwordLabel": {
+              "en": "API Key"
+            },
+            "passwordPlaceholder": {
+              "en": "tskey-api-..."
+            }
+          }
+        },
+        {
+          "id": "list_devices",
+          "template": "list_devices",
+          "navigation": {
+            "next": "add_devices"
+          }
+        },
+        {
+          "id": "add_devices",
+          "template": "add_devices"
+        }
+      ],
+      "settings": [
+        {
+          "type": "group",
+          "label": {
+            "en": "Device Information"
+          },
+          "children": [
+            {
+              "id": "nodeId",
+              "type": "label",
+              "label": {
+                "en": "Node ID"
+              },
+              "value": ""
+            },
+            {
+              "id": "hostname",
+              "type": "label",
+              "label": {
+                "en": "Hostname"
+              },
+              "value": ""
+            },
+            {
+              "id": "ipv4",
+              "type": "label",
+              "label": {
+                "en": "IPv4 Address"
+              },
+              "value": ""
+            },
+            {
+              "id": "ipv6",
+              "type": "label",
+              "label": {
+                "en": "IPv6 Address"
+              },
+              "value": ""
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "flow": {
+    "triggers": [
+      {
+        "id": "device_connected",
+        "title": {
+          "en": "A device connected"
+        },
+        "tokens": [
+          {
+            "name": "device_name",
+            "type": "string",
+            "title": {
+              "en": "Device name"
+            }
+          },
+          {
+            "name": "user",
+            "type": "string",
+            "title": {
+              "en": "User"
+            }
+          }
+        ]
+      },
+      {
+        "id": "device_disconnected",
+        "title": {
+          "en": "A device disconnected"
+        },
+        "tokens": [
+          {
+            "name": "device_name",
+            "type": "string",
+            "title": {
+              "en": "Device name"
+            }
+          },
+          {
+            "name": "user",
+            "type": "string",
+            "title": {
+              "en": "User"
+            }
+          }
+        ]
+      },
+      {
+        "id": "device_online_changed",
+        "title": {
+          "en": "Device online status changed"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tailscale-device"
+          }
+        ],
+        "tokens": [
+          {
+            "name": "online",
+            "type": "boolean",
+            "title": {
+              "en": "Online"
+            }
+          }
+        ]
+      }
+    ],
+    "conditions": [
+      {
+        "id": "is_device_online",
+        "title": {
+          "en": "Device !{{is|is not}} online"
+        },
+        "titleFormatted": {
+          "en": "[[device]] !{{is|is not}} online"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tailscale-device"
+          }
+        ]
+      }
+    ],
+    "actions": [
+      {
+        "id": "refresh_device_status",
+        "title": {
+          "en": "Refresh device status"
+        },
+        "titleFormatted": {
+          "en": "Refresh status of [[device]]"
+        },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tailscale-device"
+          }
+        ]
+      }
+    ]
+  }
+}

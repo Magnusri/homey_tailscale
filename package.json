@@ -1,0 +1,25 @@
+{
+  "name": "com.magnusri.tailscale",
+  "version": "1.0.0",
+  "description": "Monitor and manage your Tailscale network devices, users, and connections",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Magnusri/homey_tailscale.git"
+  },
+  "keywords": [
+    "tailscale",
+    "homey",
+    "vpn",
+    "mesh",
+    "network"
+  ],
+  "author": "Magnus Riise",
+  "license": "MIT",
+  "dependencies": {
+    "homey": "^3.0.0"
+  }
+}

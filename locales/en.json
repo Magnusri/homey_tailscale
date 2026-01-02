@@ -1,0 +1,5 @@
+{
+  "pair": {
+    "invalid_credentials": "Invalid Tailscale API credentials. Please check your tailnet name and API key."
+  }
+}
