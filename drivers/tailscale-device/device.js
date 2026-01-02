@@ -5,7 +5,14 @@ const TailscaleAPI = require('../../lib/tailscale-api');
 
 class TailscaleDevice extends Homey.Device {
 
-  // Constants for online status detection
+  /**
+   * Threshold for determining if a device is online based on lastSeen timestamp.
+   * A device is considered online if it was seen within this many minutes.
+   * 
+   * The 5-minute threshold is based on community best practices for Tailscale API
+   * integrations and provides a balance between responsiveness and tolerance for
+   * brief connection interruptions.
+   */
   static ONLINE_THRESHOLD_MINUTES = 5;
 
   /**
