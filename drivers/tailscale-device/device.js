@@ -67,6 +67,29 @@ class TailscaleDevice extends Homey.Device {
   }
 
   /**
+   * Determine if a device is online based on lastSeen timestamp
+   * A device is considered online if it was seen within the last 5 minutes
+   */
+  _isDeviceOnline(device) {
+    if (!device || !device.lastSeen) {
+      // If no lastSeen data, assume offline
+      return false;
+    }
+
+    try {
+      const lastSeenDate = new Date(device.lastSeen);
+      const now = new Date();
+      const diffMinutes = (now - lastSeenDate) / 1000 / 60;
+
+      // Device is online if seen within the last 5 minutes
+      return diffMinutes < 5;
+    } catch (error) {
+      this.error('Error parsing lastSeen timestamp:', error.message);
+      return false;
+    }
+  }
+
+  /**
    * Poll the Tailscale API for device status
    */
   async onPoll() {
@@ -82,8 +105,11 @@ class TailscaleDevice extends Homey.Device {
       }
       
       // Update online status
+      // Tailscale API doesn't provide an 'online' boolean field
+      // Instead, we determine online status using the 'lastSeen' timestamp
+      // A device is considered online if lastSeen is within the last 5 minutes
       const wasOnline = this.getCapabilityValue('onoff');
-      const isOnline = device.online || false;
+      const isOnline = this._isDeviceOnline(device);
       
       await this.setCapabilityValue('onoff', isOnline);
 
