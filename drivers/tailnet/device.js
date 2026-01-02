@@ -36,6 +36,8 @@ class TailnetDevice extends Homey.Device {
     this.knownDevices = new Map();
     // Map of nodeId -> last offline timestamp
     this.deviceOfflineTimestamps = new Map();
+    // Flag to skip triggering on first poll to avoid false positives
+    this.isFirstPoll = true;
 
     // Initialize error counter for retry logic
     this.consecutiveErrors = 0;
@@ -134,6 +136,8 @@ class TailnetDevice extends Homey.Device {
       
       // Process each device in the current list
       for (const device of devices) {
+        // The Tailscale API may return either 'nodeId' or 'id' depending on the endpoint
+        // We fallback to 'id' for compatibility
         const nodeId = device.nodeId || device.id;
         const deviceName = device.hostname || device.name || nodeId;
         const userName = device.user || '';
@@ -143,18 +147,20 @@ class TailnetDevice extends Homey.Device {
         if (!this.knownDevices.has(nodeId)) {
           this.log(`New device detected: ${deviceName} (${nodeId})`);
           
-          // Trigger new device joined flow
-          try {
-            const newDeviceTrigger = this.homey.app.deviceJoinedTailnetTrigger;
-            if (newDeviceTrigger) {
-              await newDeviceTrigger.trigger({
-                device_name: deviceName,
-                user: userName,
-                node_id: nodeId
-              });
+          // Trigger new device joined flow (skip on first poll to avoid false positives)
+          if (!this.isFirstPoll) {
+            try {
+              const newDeviceTrigger = this.homey.app.deviceJoinedTailnetTrigger;
+              if (newDeviceTrigger) {
+                await newDeviceTrigger.trigger({
+                  device_name: deviceName,
+                  user: userName,
+                  node_id: nodeId
+                });
+              }
+            } catch (err) {
+              this.error('Failed to trigger device_joined_tailnet:', err.message);
             }
-          } catch (err) {
-            this.error('Failed to trigger device_joined_tailnet:', err.message);
           }
           
           // Add to known devices
@@ -215,6 +221,12 @@ class TailnetDevice extends Homey.Device {
           knownDevice.name = deviceName;
           knownDevice.user = userName;
         }
+      }
+      
+      // Mark first poll as complete
+      if (this.isFirstPoll) {
+        this.isFirstPoll = false;
+        this.log('Initial device list loaded, monitoring for changes');
       }
 
     } catch (error) {
