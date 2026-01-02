@@ -20,6 +20,10 @@ class TailscaleDevice extends Homey.Device {
     // Initialize API client
     this.api = new TailscaleAPI(this.tailnet, this.apiKey);
 
+    // Initialize error counter for retry logic
+    this.consecutiveErrors = 0;
+    this.maxConsecutiveErrors = 3;
+
     // Set up polling using Homey's interval for proper cleanup
     this.pollInterval = this.homey.setInterval(() => {
       this.onPoll();
@@ -69,6 +73,14 @@ class TailscaleDevice extends Homey.Device {
     try {
       const device = await this.api.getDevice(this.nodeId);
       
+      // Reset error counter on success
+      this.consecutiveErrors = 0;
+      
+      // Make device available if it was unavailable
+      if (!this.getAvailable()) {
+        await this.setAvailable();
+      }
+      
       // Update online status
       const wasOnline = this.getCapabilityValue('onoff');
       const isOnline = device.online || false;
@@ -106,8 +118,16 @@ class TailscaleDevice extends Homey.Device {
 
     } catch (error) {
       this.error('Failed to poll device status:', error.message);
-      // Mark device as unavailable when API polling fails
-      await this.setUnavailable(this.homey.__('errors.api_error'));
+      
+      // Increment error counter
+      this.consecutiveErrors++;
+      
+      // Only mark device as unavailable after multiple consecutive failures
+      if (this.consecutiveErrors >= this.maxConsecutiveErrors) {
+        await this.setUnavailable(this.homey.__('errors.api_error'));
+      } else {
+        this.log(`Temporary error (${this.consecutiveErrors}/${this.maxConsecutiveErrors}):`, error.message);
+      }
     }
   }
 
