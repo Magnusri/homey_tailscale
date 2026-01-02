@@ -6,6 +6,16 @@ const TailscaleAPI = require('../../lib/tailscale-api');
 class TailscaleDevice extends Homey.Device {
 
   /**
+   * Threshold for determining if a device is online based on lastSeen timestamp.
+   * A device is considered online if it was seen within this many minutes.
+   * 
+   * The 5-minute threshold is based on community best practices for Tailscale API
+   * integrations and provides a balance between responsiveness and tolerance for
+   * brief connection interruptions.
+   */
+  static ONLINE_THRESHOLD_MINUTES = 5;
+
+  /**
    * onInit is called when the device is initialized.
    */
   async onInit() {
@@ -67,6 +77,36 @@ class TailscaleDevice extends Homey.Device {
   }
 
   /**
+   * Determine if a device is online based on lastSeen timestamp
+   * A device is considered online if it was seen within the last 5 minutes
+   */
+  _isDeviceOnline(device) {
+    if (!device || !device.lastSeen) {
+      // If no lastSeen data, assume offline
+      return false;
+    }
+
+    try {
+      const lastSeenDate = new Date(device.lastSeen);
+      
+      // Validate that we got a valid date
+      if (isNaN(lastSeenDate.getTime())) {
+        this.error('Invalid lastSeen timestamp:', device.lastSeen);
+        return false;
+      }
+      
+      const now = new Date();
+      const diffMinutes = (now - lastSeenDate) / (1000 * 60);
+
+      // Device is online if seen within the last 5 minutes
+      return diffMinutes < TailscaleDevice.ONLINE_THRESHOLD_MINUTES;
+    } catch (error) {
+      this.error('Error parsing lastSeen timestamp:', error.message);
+      return false;
+    }
+  }
+
+  /**
    * Poll the Tailscale API for device status
    */
   async onPoll() {
@@ -82,8 +122,11 @@ class TailscaleDevice extends Homey.Device {
       }
       
       // Update online status
+      // Tailscale API doesn't provide an 'online' boolean field
+      // Instead, we determine online status using the 'lastSeen' timestamp
+      // A device is considered online if lastSeen is within the last 5 minutes
       const wasOnline = this.getCapabilityValue('onoff');
-      const isOnline = device.online || false;
+      const isOnline = this._isDeviceOnline(device);
       
       await this.setCapabilityValue('onoff', isOnline);
 
