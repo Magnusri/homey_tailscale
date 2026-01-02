@@ -157,6 +157,8 @@ class TailnetDevice extends Homey.Device {
                   user: userName,
                   node_id: nodeId
                 });
+              } else {
+                this.log('Warning: device_joined_tailnet trigger not available');
               }
             } catch (err) {
               this.error('Failed to trigger device_joined_tailnet:', err.message);
@@ -197,6 +199,8 @@ class TailnetDevice extends Homey.Device {
                       node_id: nodeId,
                       offline_minutes: Math.round(offlineMinutes)
                     });
+                  } else {
+                    this.log('Warning: device_reconnected_tailnet trigger not available');
                   }
                 } catch (err) {
                   this.error('Failed to trigger device_reconnected_tailnet:', err.message);
