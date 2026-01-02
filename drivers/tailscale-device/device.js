@@ -7,8 +7,6 @@ class TailscaleDevice extends Homey.Device {
 
   // Constants for online status detection
   static ONLINE_THRESHOLD_MINUTES = 5;
-  static MS_PER_SECOND = 1000;
-  static SECONDS_PER_MINUTE = 60;
 
   /**
    * onInit is called when the device is initialized.
@@ -83,8 +81,15 @@ class TailscaleDevice extends Homey.Device {
 
     try {
       const lastSeenDate = new Date(device.lastSeen);
+      
+      // Validate that we got a valid date
+      if (isNaN(lastSeenDate.getTime())) {
+        this.error('Invalid lastSeen timestamp:', device.lastSeen);
+        return false;
+      }
+      
       const now = new Date();
-      const diffMinutes = (now - lastSeenDate) / TailscaleDevice.MS_PER_SECOND / TailscaleDevice.SECONDS_PER_MINUTE;
+      const diffMinutes = (now - lastSeenDate) / (1000 * 60);
 
       // Device is online if seen within the last 5 minutes
       return diffMinutes < TailscaleDevice.ONLINE_THRESHOLD_MINUTES;
