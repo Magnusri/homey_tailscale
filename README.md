@@ -1,5 +1,10 @@
 # Tailscale for Homey
 
+> [!WARNING]
+> **🤖 AI-GENERATED CODEBASE 🤖**
+> 
+> **This entire codebase has been written by AI.** All code, documentation, and implementation details were generated using artificial intelligence. Use at your own risk and review the code thoroughly before deploying in production environments.
+
 Monitor and manage your Tailscale network devices, users, and connections directly from your Homey smart home hub.
 
 ## Features
