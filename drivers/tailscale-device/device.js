@@ -105,7 +105,7 @@ class TailscaleDevice extends Homey.Device {
       await this.setCapabilityValue('alarm_generic', !isOnline);
 
     } catch (error) {
-      this.error('Failed to poll device status:', error);
+      this.error('Failed to poll device status:', error.message);
       // Mark device as unavailable when API polling fails
       await this.setUnavailable(this.homey.__('errors.api_error'));
     }

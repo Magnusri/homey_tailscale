@@ -48,12 +48,17 @@ class TailscaleDriver extends Homey.Driver {
       return devices.map(device => {
         // Get IPv4 and IPv6 addresses
         const ipv4 = device.addresses.find(addr => {
-          // Simple IPv4 check: 4 octets separated by dots, no colons
-          return /^(\d{1,3}\.){3}\d{1,3}$/.test(addr);
+          // IPv4 check: 4 octets (0-255) separated by dots
+          const parts = addr.split('.');
+          if (parts.length !== 4) return false;
+          return parts.every(part => {
+            const num = parseInt(part, 10);
+            return num >= 0 && num <= 255 && part === num.toString();
+          });
         });
         const ipv6 = device.addresses.find(addr => {
-          // IPv6 contains colons and possibly dots (for IPv4-mapped)
-          return addr.includes(':');
+          // IPv6 contains colons
+          return addr.includes(':') && !addr.includes('.');
         });
 
         return {
