@@ -20,8 +20,8 @@ class TailscaleDevice extends Homey.Device {
     // Initialize API client
     this.api = new TailscaleAPI(this.tailnet, this.apiKey);
 
-    // Set up polling
-    this.pollInterval = setInterval(() => {
+    // Set up polling using Homey's interval for proper cleanup
+    this.pollInterval = this.homey.setInterval(() => {
       this.onPoll();
     }, 60000); // Poll every minute
 
@@ -58,7 +58,7 @@ class TailscaleDevice extends Homey.Device {
     
     // Clear polling interval
     if (this.pollInterval) {
-      clearInterval(this.pollInterval);
+      this.homey.clearInterval(this.pollInterval);
     }
   }
 
@@ -106,7 +106,8 @@ class TailscaleDevice extends Homey.Device {
 
     } catch (error) {
       this.error('Failed to poll device status:', error);
-      await this.setAvailable();
+      // Mark device as unavailable when API polling fails
+      await this.setUnavailable(this.homey.__('errors.api_error'));
     }
   }
 
