@@ -43,11 +43,15 @@ class TailnetDevice extends Homey.Device {
 
     // Set up polling using Homey's interval for proper cleanup
     this.pollInterval = this.homey.setInterval(() => {
-      this.onPoll();
+      this.onPoll().catch(err => {
+        this.error('Error during poll interval:', err.message);
+      });
     }, 60000); // Poll every minute
 
     // Initial poll
-    await this.onPoll();
+    await this.onPoll().catch(err => {
+      this.error('Error during initial poll:', err.message);
+    });
   }
 
   /**
@@ -140,15 +144,17 @@ class TailnetDevice extends Homey.Device {
           this.log(`New device detected: ${deviceName} (${nodeId})`);
           
           // Trigger new device joined flow
-          const newDeviceTrigger = this.homey.app.deviceJoinedTailnetTrigger;
-          if (newDeviceTrigger) {
-            await newDeviceTrigger.trigger({
-              device_name: deviceName,
-              user: userName,
-              node_id: nodeId
-            }).catch(err => {
-              this.error('Failed to trigger device_joined_tailnet:', err.message);
-            });
+          try {
+            const newDeviceTrigger = this.homey.app.deviceJoinedTailnetTrigger;
+            if (newDeviceTrigger) {
+              await newDeviceTrigger.trigger({
+                device_name: deviceName,
+                user: userName,
+                node_id: nodeId
+              });
+            }
+          } catch (err) {
+            this.error('Failed to trigger device_joined_tailnet:', err.message);
           }
           
           // Add to known devices
@@ -176,16 +182,18 @@ class TailnetDevice extends Homey.Device {
                 this.log(`Device reconnected after ${Math.round(offlineMinutes)} minutes: ${deviceName} (${nodeId})`);
                 
                 // Trigger device reconnected flow
-                const reconnectTrigger = this.homey.app.deviceReconnectedTailnetTrigger;
-                if (reconnectTrigger) {
-                  await reconnectTrigger.trigger({
-                    device_name: deviceName,
-                    user: userName,
-                    node_id: nodeId,
-                    offline_minutes: Math.round(offlineMinutes)
-                  }).catch(err => {
-                    this.error('Failed to trigger device_reconnected_tailnet:', err.message);
-                  });
+                try {
+                  const reconnectTrigger = this.homey.app.deviceReconnectedTailnetTrigger;
+                  if (reconnectTrigger) {
+                    await reconnectTrigger.trigger({
+                      device_name: deviceName,
+                      user: userName,
+                      node_id: nodeId,
+                      offline_minutes: Math.round(offlineMinutes)
+                    });
+                  }
+                } catch (err) {
+                  this.error('Failed to trigger device_reconnected_tailnet:', err.message);
                 }
               }
               
