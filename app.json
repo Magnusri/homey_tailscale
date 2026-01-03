@@ -199,6 +199,13 @@
         "title": {
           "en": "A device connected"
         },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tailscale-device"
+          }
+        ],
         "tokens": [
           {
             "name": "device_name",
@@ -221,6 +228,13 @@
         "title": {
           "en": "A device disconnected"
         },
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=tailscale-device"
+          }
+        ],
         "tokens": [
           {
             "name": "device_name",

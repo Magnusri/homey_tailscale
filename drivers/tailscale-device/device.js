@@ -34,6 +34,14 @@ class TailscaleDevice extends Homey.Device {
     this.consecutiveErrors = 0;
     this.maxConsecutiveErrors = 3;
 
+    // Register capability listener for onoff (even though it's read-only)
+    // This ensures Homey properly tracks capability changes for flow cards
+    this.registerCapabilityListener('onoff', async (value) => {
+      // This capability is read-only and updated by polling
+      // No action needed here
+      return value;
+    });
+
     // Set up polling using Homey's interval for proper cleanup
     this.pollInterval = this.homey.setInterval(() => {
       this.onPoll();
@@ -140,7 +148,7 @@ class TailscaleDevice extends Homey.Device {
         if (isOnline && !wasOnline) {
           const connectTrigger = this.homey.app.deviceConnectedTrigger;
           if (connectTrigger) {
-            await connectTrigger.trigger({
+            await connectTrigger.trigger(this, {
               device_name: this.getName(),
               user: device.user || ''
             });
@@ -148,7 +156,7 @@ class TailscaleDevice extends Homey.Device {
         } else if (!isOnline && wasOnline) {
           const disconnectTrigger = this.homey.app.deviceDisconnectedTrigger;
           if (disconnectTrigger) {
-            await disconnectTrigger.trigger({
+            await disconnectTrigger.trigger(this, {
               device_name: this.getName(),
               user: device.user || ''
             });
