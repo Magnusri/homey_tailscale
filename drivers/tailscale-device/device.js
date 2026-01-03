@@ -34,14 +34,6 @@ class TailscaleDevice extends Homey.Device {
     this.consecutiveErrors = 0;
     this.maxConsecutiveErrors = 3;
 
-    // Register capability listener for onoff (even though it's read-only)
-    // This ensures Homey properly tracks capability changes for flow cards
-    this.registerCapabilityListener('onoff', async (value) => {
-      // This capability is read-only and updated by polling
-      // No action needed here
-      return value;
-    });
-
     // Set up polling using Homey's interval for proper cleanup
     this.pollInterval = this.homey.setInterval(() => {
       this.onPoll();
