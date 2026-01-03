@@ -140,7 +140,7 @@ class TailscaleDevice extends Homey.Device {
         if (isOnline && !wasOnline) {
           const connectTrigger = this.homey.app.deviceConnectedTrigger;
           if (connectTrigger) {
-            await connectTrigger.trigger({
+            await connectTrigger.trigger(this, {
               device_name: this.getName(),
               user: device.user || ''
             });
@@ -148,7 +148,7 @@ class TailscaleDevice extends Homey.Device {
         } else if (!isOnline && wasOnline) {
           const disconnectTrigger = this.homey.app.deviceDisconnectedTrigger;
           if (disconnectTrigger) {
-            await disconnectTrigger.trigger({
+            await disconnectTrigger.trigger(this, {
               device_name: this.getName(),
               user: device.user || ''
             });
