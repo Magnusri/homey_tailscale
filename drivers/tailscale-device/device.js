@@ -136,24 +136,6 @@ class TailscaleDevice extends Homey.Device {
         if (trigger) {
           await trigger.trigger(this, { online: isOnline });
         }
-
-        if (isOnline && !wasOnline) {
-          const connectTrigger = this.homey.app.deviceConnectedTrigger;
-          if (connectTrigger) {
-            await connectTrigger.trigger(this, {
-              device_name: this.getName(),
-              user: device.user || ''
-            });
-          }
-        } else if (!isOnline && wasOnline) {
-          const disconnectTrigger = this.homey.app.deviceDisconnectedTrigger;
-          if (disconnectTrigger) {
-            await disconnectTrigger.trigger(this, {
-              device_name: this.getName(),
-              user: device.user || ''
-            });
-          }
-        }
       }
 
       // Clear alarm if online, set if offline
