@@ -31,9 +31,9 @@ Complete driver implementation with:
 
 ### 4. Flow Cards
 **Triggers:**
-- Device connected to network
-- Device disconnected from network
-- Device online status changed
+- Device online status changed (device-specific)
+- New device joined tailnet (tailnet-wide)
+- Device reconnected after being offline (tailnet-wide)
 
 **Conditions:**
 - Check if device is online

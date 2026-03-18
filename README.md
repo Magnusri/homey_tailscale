@@ -50,9 +50,7 @@ Your tailnet name is typically your organization domain (e.g., `example.com`) or
 ### Flow Cards
 
 **Triggers:**
-- A device connected - Fires when any device connects
-- A device disconnected - Fires when any device disconnects
-- Device online status changed - Fires when a specific device's status changes
+- Device online status changed - Fires when a specific device's online/offline status changes
 - A new device joined the tailnet - Fires when a new device is detected on the Tailnet (requires Tailnet Monitor device)
 - A device reconnected after being offline - Fires when a device reconnects after being offline for 15+ minutes (requires Tailnet Monitor device)
 

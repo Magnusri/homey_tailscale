@@ -195,64 +195,6 @@
   "flow": {
     "triggers": [
       {
-        "id": "device_connected",
-        "title": {
-          "en": "A device connected"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=tailscale-device"
-          }
-        ],
-        "tokens": [
-          {
-            "name": "device_name",
-            "type": "string",
-            "title": {
-              "en": "Device name"
-            }
-          },
-          {
-            "name": "user",
-            "type": "string",
-            "title": {
-              "en": "User"
-            }
-          }
-        ]
-      },
-      {
-        "id": "device_disconnected",
-        "title": {
-          "en": "A device disconnected"
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=tailscale-device"
-          }
-        ],
-        "tokens": [
-          {
-            "name": "device_name",
-            "type": "string",
-            "title": {
-              "en": "Device name"
-            }
-          },
-          {
-            "name": "user",
-            "type": "string",
-            "title": {
-              "en": "User"
-            }
-          }
-        ]
-      },
-      {
         "id": "device_online_changed",
         "title": {
           "en": "Device online status changed"
